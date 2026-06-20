@@ -1,0 +1,525 @@
+{
+  "unit": "Einheit 1",
+  "words": [
+    {
+      "id": "e1-w1",
+      "italian": "Ciao! (saluto)",
+      "german": "Hallo!",
+      "gender": null,
+      "plural": null,
+      "partOfSpeech": "other"
+    },
+    {
+      "id": "e1-w2",
+      "italian": "sera",
+      "german": "Abend",
+      "gender": "der",
+      "plural": "Abende",
+      "partOfSpeech": "noun"
+    },
+    {
+      "id": "e1-w3",
+      "italian": "alfabeto",
+      "german": "Alphabet",
+      "gender": "das",
+      "plural": "Alphabete",
+      "partOfSpeech": "noun"
+    },
+    {
+      "id": "e1-w4",
+      "italian": "età",
+      "german": "Alter",
+      "gender": "das",
+      "plural": "Alter",
+      "partOfSpeech": "noun"
+    },
+    {
+      "id": "e1-w5",
+      "italian": "arabo (lingua)",
+      "german": "Arabisch",
+      "gender": null,
+      "plural": null,
+      "partOfSpeech": "noun"
+    },
+    {
+      "id": "e1-w6",
+      "italian": "automobile",
+      "german": "Auto",
+      "gender": "das",
+      "plural": "Autos",
+      "partOfSpeech": "noun"
+    },
+    {
+      "id": "e1-w7",
+      "italian": "banca",
+      "german": "Bank",
+      "gender": "die",
+      "plural": "Banken",
+      "partOfSpeech": "noun"
+    },
+    {
+      "id": "e1-w8",
+      "italian": "libro",
+      "german": "Buch",
+      "gender": "das",
+      "plural": "Bücher",
+      "partOfSpeech": "noun"
+    },
+    {
+      "id": "e1-w9",
+      "italian": "autobus",
+      "german": "Bus",
+      "gender": "der",
+      "plural": "Busse",
+      "partOfSpeech": "noun"
+    },
+    {
+      "id": "e1-w10",
+      "italian": "computer",
+      "german": "Computer",
+      "gender": "der",
+      "plural": "Computer",
+      "partOfSpeech": "noun"
+    },
+    {
+      "id": "e1-w11",
+      "italian": "insegnante di tedesco (m.)",
+      "german": "Deutschlehrer",
+      "gender": "der",
+      "plural": "Deutschlehrer",
+      "partOfSpeech": "noun"
+    },
+    {
+      "id": "e1-w12",
+      "italian": "insegnante di tedesco (f.)",
+      "german": "Deutschlehrerin",
+      "gender": "die",
+      "plural": "Deutschlehrerinnen",
+      "partOfSpeech": "noun"
+    },
+    {
+      "id": "e1-w13",
+      "italian": "signora (titolo)",
+      "german": "Frau",
+      "gender": "die",
+      "plural": "Frauen",
+      "partOfSpeech": "noun"
+    },
+    {
+      "id": "e1-w14",
+      "italian": "casa",
+      "german": "Haus",
+      "gender": "das",
+      "plural": "Häuser",
+      "partOfSpeech": "noun"
+    },
+    {
+      "id": "e1-w15",
+      "italian": "signore (titolo)",
+      "german": "Herr",
+      "gender": "der",
+      "plural": "Herren",
+      "partOfSpeech": "noun"
+    },
+    {
+      "id": "e1-w16",
+      "italian": "hotel",
+      "german": "Hotel",
+      "gender": "das",
+      "plural": "Hotels",
+      "partOfSpeech": "noun"
+    },
+    {
+      "id": "e1-w17",
+      "italian": "anno",
+      "german": "Jahr",
+      "gender": "das",
+      "plural": "Jahre",
+      "partOfSpeech": "noun"
+    },
+    {
+      "id": "e1-w18",
+      "italian": "caffè (bevanda)",
+      "german": "Kaffee",
+      "gender": "der",
+      "plural": "Kaffees",
+      "partOfSpeech": "noun"
+    },
+    {
+      "id": "e1-w19",
+      "italian": "bambino",
+      "german": "Kind",
+      "gender": "das",
+      "plural": "Kinder",
+      "partOfSpeech": "noun"
+    },
+    {
+      "id": "e1-w20",
+      "italian": "classe",
+      "german": "Klasse",
+      "gender": "die",
+      "plural": "Klassen",
+      "partOfSpeech": "noun"
+    },
+    {
+      "id": "e1-w21",
+      "italian": "Paese / nazione",
+      "german": "Land",
+      "gender": "das",
+      "plural": "Länder",
+      "partOfSpeech": "noun"
+    },
+    {
+      "id": "e1-w22",
+      "italian": "insegnante (m.)",
+      "german": "Lehrer",
+      "gender": "der",
+      "plural": "Lehrer",
+      "partOfSpeech": "noun"
+    },
+    {
+      "id": "e1-w23",
+      "italian": "insegnante (f.)",
+      "german": "Lehrerin",
+      "gender": "die",
+      "plural": "Lehrerinnen",
+      "partOfSpeech": "noun"
+    },
+    {
+      "id": "e1-w24",
+      "italian": "gente / persone",
+      "german": "Leute",
+      "gender": "die",
+      "plural": "Leute",
+      "partOfSpeech": "noun"
+    },
+    {
+      "id": "e1-w25",
+      "italian": "topo",
+      "german": "Maus",
+      "gender": "die",
+      "plural": "Mäuse",
+      "partOfSpeech": "noun"
+    },
+    {
+      "id": "e1-w26",
+      "italian": "mattina",
+      "german": "Morgen",
+      "gender": "der",
+      "plural": "Morgen",
+      "partOfSpeech": "noun"
+    },
+    {
+      "id": "e1-w27",
+      "italian": "musica",
+      "german": "Musik",
+      "gender": "die",
+      "plural": null,
+      "partOfSpeech": "noun"
+    },
+    {
+      "id": "e1-w28",
+      "italian": "madre",
+      "german": "Mutter",
+      "gender": "die",
+      "plural": "Mütter",
+      "partOfSpeech": "noun"
+    },
+    {
+      "id": "e1-w29",
+      "italian": "notte",
+      "german": "Nacht",
+      "gender": "die",
+      "plural": "Nächte",
+      "partOfSpeech": "noun"
+    },
+    {
+      "id": "e1-w30",
+      "italian": "nome",
+      "german": "Name",
+      "gender": "der",
+      "plural": "Namen",
+      "partOfSpeech": "noun"
+    },
+    {
+      "id": "e1-w31",
+      "italian": "nazione",
+      "german": "Nation",
+      "gender": "die",
+      "plural": "Nationen",
+      "partOfSpeech": "noun"
+    },
+    {
+      "id": "e1-w32",
+      "italian": "studente",
+      "german": "Schüler",
+      "gender": "der",
+      "plural": "Schüler",
+      "partOfSpeech": "noun"
+    },
+    {
+      "id": "e1-w33",
+      "italian": "studentessa",
+      "german": "Schülerin",
+      "gender": "die",
+      "plural": "Schülerinnen",
+      "partOfSpeech": "noun"
+    },
+    {
+      "id": "e1-w34",
+      "italian": "Svizzera",
+      "german": "Schweiz",
+      "gender": "die",
+      "plural": null,
+      "partOfSpeech": "noun"
+    },
+    {
+      "id": "e1-w35",
+      "italian": "lingua",
+      "german": "Sprache",
+      "gender": "die",
+      "plural": "Sprachen",
+      "partOfSpeech": "noun"
+    },
+    {
+      "id": "e1-w36",
+      "italian": "città",
+      "german": "Stadt",
+      "gender": "die",
+      "plural": "Städte",
+      "partOfSpeech": "noun"
+    },
+    {
+      "id": "e1-w37",
+      "italian": "giorno",
+      "german": "Tag",
+      "gender": "der",
+      "plural": "Tage",
+      "partOfSpeech": "noun"
+    },
+    {
+      "id": "e1-w38",
+      "italian": "taxi",
+      "german": "Taxi",
+      "gender": "das",
+      "plural": "Taxis",
+      "partOfSpeech": "noun"
+    },
+    {
+      "id": "e1-w39",
+      "italian": "telefono",
+      "german": "Telefon",
+      "gender": "das",
+      "plural": "Telefone",
+      "partOfSpeech": "noun"
+    },
+    {
+      "id": "e1-w40",
+      "italian": "teatro",
+      "german": "Theater",
+      "gender": "das",
+      "plural": "Theater",
+      "partOfSpeech": "noun"
+    },
+    {
+      "id": "e1-w41",
+      "italian": "padre",
+      "german": "Vater",
+      "gender": "der",
+      "plural": "Väter",
+      "partOfSpeech": "noun"
+    },
+    {
+      "id": "e1-w42",
+      "italian": "numero (cifra)",
+      "german": "Zahl",
+      "gender": "die",
+      "plural": "Zahlen",
+      "partOfSpeech": "noun"
+    },
+    {
+      "id": "e1-w43",
+      "italian": "fare lo spelling / compitare",
+      "german": "buchstabieren",
+      "gender": null,
+      "plural": null,
+      "partOfSpeech": "verb"
+    },
+    {
+      "id": "e1-w44",
+      "italian": "chiamarsi",
+      "german": "heißen",
+      "gender": null,
+      "plural": null,
+      "partOfSpeech": "verb"
+    },
+    {
+      "id": "e1-w45",
+      "italian": "venire",
+      "german": "kommen",
+      "gender": null,
+      "plural": null,
+      "partOfSpeech": "verb"
+    },
+    {
+      "id": "e1-w46",
+      "italian": "imparare / studiare",
+      "german": "lernen",
+      "gender": null,
+      "plural": null,
+      "partOfSpeech": "verb"
+    },
+    {
+      "id": "e1-w47",
+      "italian": "trovarsi (stato in luogo)",
+      "german": "liegen",
+      "gender": null,
+      "plural": null,
+      "partOfSpeech": "verb"
+    },
+    {
+      "id": "e1-w48",
+      "italian": "dire",
+      "german": "sagen",
+      "gender": null,
+      "plural": null,
+      "partOfSpeech": "verb"
+    },
+    {
+      "id": "e1-w49",
+      "italian": "essere",
+      "german": "sein",
+      "gender": null,
+      "plural": null,
+      "partOfSpeech": "verb"
+    },
+    {
+      "id": "e1-w50",
+      "italian": "parlare",
+      "german": "sprechen",
+      "gender": null,
+      "plural": null,
+      "partOfSpeech": "verb"
+    },
+    {
+      "id": "e1-w51",
+      "italian": "abitare",
+      "german": "wohnen",
+      "gender": null,
+      "plural": null,
+      "partOfSpeech": "verb"
+    },
+    {
+      "id": "e1-w52",
+      "italian": "vecchio / anziano",
+      "german": "alt",
+      "gender": null,
+      "plural": null,
+      "partOfSpeech": "adjective"
+    },
+    {
+      "id": "e1-w53",
+      "italian": "presto",
+      "german": "bald",
+      "gender": null,
+      "plural": null,
+      "partOfSpeech": "adjective"
+    },
+    {
+      "id": "e1-w54",
+      "italian": "entrambi / tutti e due",
+      "german": "beide",
+      "gender": null,
+      "plural": null,
+      "partOfSpeech": "adjective"
+    },
+    {
+      "id": "e1-w55",
+      "italian": "grande / alto (persona)",
+      "german": "groß",
+      "gender": null,
+      "plural": null,
+      "partOfSpeech": "adjective"
+    },
+    {
+      "id": "e1-w56",
+      "italian": "buono",
+      "german": "gut",
+      "gender": null,
+      "plural": null,
+      "partOfSpeech": "adjective"
+    },
+    {
+      "id": "e1-w57",
+      "italian": "qui / qua",
+      "german": "hier",
+      "gender": null,
+      "plural": null,
+      "partOfSpeech": "adjective"
+    },
+    {
+      "id": "e1-w58",
+      "italian": "adesso / ora",
+      "german": "jetzt",
+      "gender": null,
+      "plural": null,
+      "partOfSpeech": "adjective"
+    },
+    {
+      "id": "e1-w59",
+      "italian": "piccolo / basso (altezza)",
+      "german": "klein",
+      "gender": null,
+      "plural": null,
+      "partOfSpeech": "adjective"
+    },
+    {
+      "id": "e1-w60",
+      "italian": "moderno",
+      "german": "modern",
+      "gender": null,
+      "plural": null,
+      "partOfSpeech": "adjective"
+    },
+    {
+      "id": "e1-w61",
+      "italian": "domani",
+      "german": "morgen",
+      "gender": null,
+      "plural": null,
+      "partOfSpeech": "adjective"
+    },
+    {
+      "id": "e1-w62",
+      "italian": "nuovo",
+      "german": "neu",
+      "gender": null,
+      "plural": null,
+      "partOfSpeech": "adjective"
+    },
+    {
+      "id": "e1-w63",
+      "italian": "bello",
+      "german": "schön",
+      "gender": null,
+      "plural": null,
+      "partOfSpeech": "adjective"
+    },
+    {
+      "id": "e1-w64",
+      "italian": "molto (avv.)",
+      "german": "sehr",
+      "gender": null,
+      "plural": null,
+      "partOfSpeech": "adjective"
+    },
+    {
+      "id": "e1-w65",
+      "italian": "benvenuto",
+      "german": "willkommen",
+      "gender": null,
+      "plural": null,
+      "partOfSpeech": "adjective"
+    }
+  ]
+}
