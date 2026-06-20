@@ -160,6 +160,7 @@ body {
   flex: 1;
   justify-content: center;
   min-height: 400px;
+  width: 100%;
 }
 
 .unit-selector-wrapper {

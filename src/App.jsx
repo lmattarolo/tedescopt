@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getWords, getProgress, recordReview } from './utils/db';
+import { getWords, getProgress, recordReview, importUnit } from './utils/db';
 import { getNextCard } from './utils/scheduler';
 import Flashcard from './components/Flashcard';
 import DeckManager from './components/DeckManager';
@@ -14,8 +14,37 @@ export default function App() {
 
   // Fetch words and progress from LocalStorage on mount
   useEffect(() => {
-    refreshData();
+    const loadedWords = getWords();
+    if (loadedWords.length === 0) {
+      loadDefaultUnits();
+    } else {
+      refreshData();
+    }
   }, []);
+
+  const loadDefaultUnits = async () => {
+    const defaultUnits = Array.from({ length: 12 }, (_, i) => `einheit_${i + 1}.json`);
+    const baseUrl = (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.BASE_URL) || '/';
+    try {
+      for (const unitFile of defaultUnits) {
+        try {
+          const response = await fetch(`${baseUrl}zanichelli_vocabulary/${unitFile}`);
+          if (response.ok) {
+            const data = await response.json();
+            if (data.unit && data.words) {
+              importUnit(data.unit, data.words);
+            }
+          }
+        } catch (e) {
+          // ignore missing files as user will add them over time
+        }
+      }
+      refreshData();
+    } catch (error) {
+      console.error('Error loading default vocabulary:', error);
+      refreshData();
+    }
+  };
 
   // Reload data from DB
   const refreshData = () => {
@@ -26,14 +55,14 @@ export default function App() {
   };
 
   // Get list of all available units in the database
-  const availableUnits = [...new Set(words.map(w => w.unit))].sort((a, b) => 
+  const availableUnits = [...new Set(words.map(w => w.unit || 'Default'))].sort((a, b) => 
     a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' })
   );
 
   // Filter words based on selected units
   const getFilteredWords = () => {
     if (selectedUnits.length === 0) return words; // If none selected, default to all
-    return words.filter(w => selectedUnits.includes(w.unit));
+    return words.filter(w => selectedUnits.includes(w.unit || 'Default'));
   };
 
   // Update current card when selected units or words list change
@@ -129,7 +158,7 @@ export default function App() {
             )}
             
             {/* Active Card display */}
-            <Flashcard card={currentCard} onRate={handleRate} />
+            <Flashcard key={currentCard ? currentCard.id : 'empty'} card={currentCard} onRate={handleRate} />
           </div>
         )}
 

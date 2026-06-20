@@ -38,9 +38,9 @@ export default function Stats({ words, progress }) {
     : 0;
 
   // Group stats by Unit
-  const units = [...new Set(words.map(w => w.unit))];
+  const units = [...new Set(words.map(w => w.unit || 'Default'))];
   const unitStats = units.map(unitName => {
-    const unitWords = words.filter(w => w.unit === unitName);
+    const unitWords = words.filter(w => (w.unit || 'Default') === unitName);
     const unitWordIds = unitWords.map(w => w.id);
     const unitReviewed = unitWordIds.filter(id => progress[id]);
     

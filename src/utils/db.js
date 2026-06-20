@@ -7,7 +7,9 @@ const STORAGE_KEYS = {
 
 // Generates a unique ID (simple browser-compatible UUID replacement)
 export function generateId() {
-  return crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substring(2, 9);
+  return typeof crypto !== 'undefined' && crypto.randomUUID 
+    ? crypto.randomUUID() 
+    : Math.random().toString(36).substring(2, 9);
 }
 
 // Get all vocabulary words

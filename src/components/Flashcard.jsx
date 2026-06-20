@@ -13,16 +13,8 @@ export default function Flashcard({ card, onRate }) {
     setFlipState('front');
   }, [card]);
 
-  if (!card) {
-    return (
-      <div className="empty-state">
-        <div className="empty-state-icon">📚</div>
-        <p>No cards available. Import some units or add words in "Manage Decks" to start!</p>
-      </div>
-    );
-  }
-
-  const hasPlural = card.partOfSpeech === 'noun' && card.plural && card.plural.trim() !== '';
+  // Determine if plural exists safely
+  const hasPlural = card && card.partOfSpeech === 'noun' && card.plural && card.plural.trim() !== '';
 
   // Handle clicking the card to advance state
   const handleCardClick = () => {
@@ -35,26 +27,31 @@ export default function Flashcard({ card, onRate }) {
 
   // Keyboard controls
   useEffect(() => {
+    if (!card) return; // Don't attach listeners if no card
+
     const handleKeyDown = (e) => {
       if (e.code === 'Space' || e.code === 'Enter') {
         e.preventDefault();
         handleCardClick();
       } else if (e.code === 'Digit1' || e.code === 'ArrowLeft') {
-        // Rate as wrong if back or plural is visible
-        if (flipState !== 'front') {
-          onRate(false);
-        }
+        if (flipState !== 'front') onRate(false);
       } else if (e.code === 'Digit2' || e.code === 'ArrowRight') {
-        // Rate as correct if back or plural is visible
-        if (flipState !== 'front') {
-          onRate(true);
-        }
+        if (flipState !== 'front') onRate(true);
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [flipState, card, onRate]);
+  }, [flipState, card, onRate, hasPlural]); // Added hasPlural to dependencies implicitly via handleCardClick
+
+  if (!card) {
+    return (
+      <div className="empty-state">
+        <div className="empty-state-icon">📚</div>
+        <p>No cards available. Import some units or add words in "Manage Decks" to start!</p>
+      </div>
+    );
+  }
 
   // Determine wrapper class for 3D flip animation
   let wrapperClass = 'card-wrapper';
@@ -77,6 +74,7 @@ export default function Flashcard({ card, onRate }) {
   return (
     <div className="study-container">
       <div 
+        key={card.id}
         className={wrapperClass} 
         onClick={handleCardClick}
         role="button"
