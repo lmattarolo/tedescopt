@@ -14,7 +14,7 @@ export default function Flashcard({ card, onRate }) {
   }, [card]);
 
   // Determine if plural exists safely
-  const hasPlural = card && card.partOfSpeech === 'noun' && card.plural && card.plural.trim() !== '';
+  const hasPlural = card && card.partOfSpeech === 'nome' && card.plural && card.plural.trim() !== '';
 
   // Handle clicking the card to advance state
   const handleCardClick = () => {
@@ -48,7 +48,7 @@ export default function Flashcard({ card, onRate }) {
     return (
       <div className="empty-state">
         <div className="empty-state-icon">📚</div>
-        <p>No cards available. Import some units or add words in "Manage Decks" to start!</p>
+        <p>Nessuna carta disponibile. Importa delle unità o aggiungi parole in "Gestisci mazzi" per iniziare!</p>
       </div>
     );
   }
@@ -64,10 +64,13 @@ export default function Flashcard({ card, onRate }) {
   // Helper to format part of speech
   const getPosLabel = (pos) => {
     switch (pos) {
-      case 'noun': return 'Noun';
-      case 'verb': return 'Verb';
-      case 'adjective': return 'Adjective';
-      default: return 'Other';
+      case 'nome':
+      case 'noun': return 'Sostantivo';
+      case 'verbo':
+      case 'verb': return 'Verbo';
+      case 'aggettivo':
+      case 'adjective': return 'Aggettivo';
+      default: return 'Altro';
     }
   };
 
@@ -79,7 +82,7 @@ export default function Flashcard({ card, onRate }) {
         onClick={handleCardClick}
         role="button"
         tabIndex={0}
-        aria-label={`Flashcard: ${card.italian}. Press Space to flip.`}
+        aria-label={`Flashcard: ${card.italian}. Premi Spazio per girare.`}
       >
         <div className="flashcard">
           {/* FRONT FACE (Italian Word) */}
@@ -87,7 +90,7 @@ export default function Flashcard({ card, onRate }) {
             <span className="card-unit-badge">{card.unit}</span>
             <span className="card-pos-badge">{getPosLabel(card.partOfSpeech)}</span>
             <h2 className="card-text">{card.italian}</h2>
-            <div className="flip-prompt">Tap or Press Space to flip</div>
+            <div className="flip-prompt">Tocca o premi Spazio per girare</div>
           </div>
 
           {/* BACK FACE (German Word + Details) */}
@@ -96,13 +99,13 @@ export default function Flashcard({ card, onRate }) {
             <span className="card-pos-badge">{getPosLabel(card.partOfSpeech)}</span>
             
             <div className="german-container">
-              {card.partOfSpeech === 'noun' && card.gender && (
+              {card.partOfSpeech === 'nome' && card.gender && (
                 <span className={`gender-badge ${card.gender}`}>
                   {card.gender}
                 </span>
               )}
               <h2 className="german-word">
-                {card.partOfSpeech === 'noun' && card.gender ? (
+                {card.partOfSpeech === 'nome' && card.gender ? (
                   <>
                     <span style={{ opacity: 0.5, marginRight: '8px' }}>
                       {card.gender === 'der' ? 'der' : card.gender === 'die' ? 'die' : 'das'}
@@ -120,19 +123,19 @@ export default function Flashcard({ card, onRate }) {
               <>
                 {flipState === 'plural' ? (
                   <div className="plural-container">
-                    <div className="plural-title">Plural</div>
+                    <div className="plural-title">Plurale</div>
                     <div className="plural-word">{card.plural}</div>
                   </div>
                 ) : (
                   <div className="plural-guess-hint">
-                    Tap again to reveal plural ({card.plural ? 'Plural exists' : ''})
+                    Tocca ancora per mostrare il plurale ({card.plural ? 'Il plurale esiste' : ''})
                   </div>
                 )}
               </>
             )}
 
             <div className="flip-prompt">
-              {flipState === 'back' && hasPlural ? 'Tap again to see plural' : 'Rate your guess below'}
+              {flipState === 'back' && hasPlural ? 'Tocca ancora per vedere il plurale' : 'Valuta la tua risposta qui sotto'}
             </div>
           </div>
         </div>
@@ -144,16 +147,16 @@ export default function Flashcard({ card, onRate }) {
           <button 
             className="rate-btn wrong" 
             onClick={() => onRate(false)}
-            aria-label="Mark as incorrect (Press 1 or Left Arrow)"
+            aria-label="Segna come errato (Premi 1 o Freccia Sinistra)"
           >
-            <span>❌</span> Wrong
+            <span>❌</span> Errato
           </button>
           <button 
             className="rate-btn correct" 
             onClick={() => onRate(true)}
-            aria-label="Mark as correct (Press 2 or Right Arrow)"
+            aria-label="Segna come corretto (Premi 2 o Freccia Destra)"
           >
-            <span>✨</span> Correct
+            <span>✨</span> Corretto
           </button>
         </div>
       )}

@@ -51,3 +51,28 @@ export function getNextCard(words, progress, lastWordId = null) {
   // Fallback (should rarely be reached)
   return candidateWords[candidateWords.length - 1];
 }
+
+/**
+ * Generates a sequence of unique words for a study session.
+ * @param {Array} words - Array of vocabulary word objects.
+ * @param {Object} progress - Progress map containing weights keyed by word ID.
+ * @param {number} count - Maximum number of words for the session.
+ * @returns {Array} Array of selected word objects.
+ */
+export function generateSessionSequence(words, progress, count) {
+  if (!words || words.length === 0) return [];
+  
+  let pool = [...words];
+  let session = [];
+  const limit = Math.min(count, pool.length);
+  
+  for (let i = 0; i < limit; i++) {
+    const nextWord = getNextCard(pool, progress, null);
+    if (!nextWord) break;
+    
+    session.push(nextWord);
+    pool = pool.filter(w => w.id !== nextWord.id);
+  }
+  
+  return session;
+}

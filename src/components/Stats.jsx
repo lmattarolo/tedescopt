@@ -5,7 +5,7 @@ export default function Stats({ words, progress }) {
     return (
       <div className="panel empty-state">
         <div className="empty-state-icon">📊</div>
-        <p>No statistics to display yet. Start reviewing cards to track your progress!</p>
+        <p>Nessuna statistica da mostrare al momento. Inizia a ripassare le carte per tracciare i tuoi progressi!</p>
       </div>
     );
   }
@@ -73,42 +73,42 @@ export default function Stats({ words, progress }) {
 
   return (
     <div className="panel">
-      <h2 style={{ marginBottom: '20px' }}>Your Learning Dashboard</h2>
+      <h2 style={{ marginBottom: '20px' }}>I tuoi progressi</h2>
       
       {/* Top Level Cards */}
       <div className="stats-grid">
         <div className="stat-card">
           <div className="stat-number">{totalWords}</div>
-          <div className="stat-label">Total Words</div>
+          <div className="stat-label">Parole totali</div>
         </div>
         <div className="stat-card">
           <div className="stat-number">{learnedCount}</div>
-          <div className="stat-label">Learned (Strong)</div>
+          <div className="stat-label">Imparate (Consolidate)</div>
         </div>
         <div className="stat-card">
           <div className="stat-number">{strugglingCount}</div>
-          <div className="stat-label">Struggling</div>
+          <div className="stat-label">In difficoltà</div>
         </div>
         <div className="stat-card">
           <div className="stat-number">{averageCorrectness}%</div>
-          <div className="stat-label">Accuracy</div>
+          <div className="stat-label">Precisione</div>
         </div>
       </div>
 
       {/* Progress Breakdown by Unit */}
       <h3 style={{ marginTop: '24px', marginBottom: '12px', fontSize: '1.2rem', color: 'var(--text-primary)' }}>
-        Progress by Unit
+        Progressi per unità
       </h3>
       <div className="word-table-wrapper">
         <table className="word-table">
           <thead>
             <tr>
-              <th>Unit</th>
-              <th>Words</th>
-              <th>Reviewed</th>
-              <th>Learned</th>
-              <th>Total Reviews</th>
-              <th>Accuracy</th>
+              <th>Unità</th>
+              <th>Parole</th>
+              <th>Ripassate</th>
+              <th>Imparate</th>
+              <th>Ripassi totali</th>
+              <th>Precisione</th>
             </tr>
           </thead>
           <tbody>

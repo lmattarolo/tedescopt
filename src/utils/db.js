@@ -12,11 +12,33 @@ export function generateId() {
     : Math.random().toString(36).substring(2, 9);
 }
 
+// Normalizes part of speech values to Italian equivalents
+export function normalizePartOfSpeech(pos) {
+  const normalized = (pos || '').trim().toLowerCase();
+  switch (normalized) {
+    case 'noun':
+    case 'nome':
+      return 'nome';
+    case 'verb':
+    case 'verbo':
+      return 'verbo';
+    case 'adjective':
+    case 'aggettivo':
+      return 'aggettivo';
+    default:
+      return 'altro';
+  }
+}
+
 // Get all vocabulary words
 export function getWords() {
   try {
     const raw = localStorage.getItem(STORAGE_KEYS.WORDS);
-    return raw ? JSON.parse(raw) : [];
+    const parsed = raw ? JSON.parse(raw) : [];
+    return parsed.map(w => ({
+      ...w,
+      partOfSpeech: normalizePartOfSpeech(w.partOfSpeech)
+    }));
   } catch (e) {
     console.error('Error reading words from LocalStorage:', e);
     return [];
@@ -63,7 +85,7 @@ export function importUnit(unitName, newWords) {
     german: (word.german || '').trim(),
     gender: word.gender ? word.gender.trim().toLowerCase() : null,
     plural: word.plural ? word.plural.trim() : null,
-    partOfSpeech: word.partOfSpeech || 'other',
+    partOfSpeech: normalizePartOfSpeech(word.partOfSpeech),
     unit: unitName,
   }));
 
@@ -121,7 +143,7 @@ export function addWord(word) {
     german: (word.german || '').trim(),
     gender: word.gender ? word.gender.trim().toLowerCase() : null,
     plural: word.plural ? word.plural.trim() : null,
-    partOfSpeech: word.partOfSpeech || 'other',
+    partOfSpeech: normalizePartOfSpeech(word.partOfSpeech),
     unit: (word.unit || 'Manual').trim(),
   };
   words.push(newWord);
@@ -141,6 +163,7 @@ export function updateWord(updatedWord) {
       german: (updatedWord.german || '').trim(),
       gender: updatedWord.gender ? updatedWord.gender.trim().toLowerCase() : null,
       plural: updatedWord.plural ? updatedWord.plural.trim() : null,
+      partOfSpeech: normalizePartOfSpeech(updatedWord.partOfSpeech),
     };
     saveWords(words);
     return true;
@@ -180,7 +203,11 @@ export function importBackup(jsonString) {
     if (!data.words || !Array.isArray(data.words)) {
       throw new Error('Invalid backup file format: missing words array.');
     }
-    saveWords(data.words);
+    const normalizedWords = data.words.map(w => ({
+      ...w,
+      partOfSpeech: normalizePartOfSpeech(w.partOfSpeech)
+    }));
+    saveWords(normalizedWords);
     saveProgress(data.progress || {});
     return true;
   } catch (e) {

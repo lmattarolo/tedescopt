@@ -10,7 +10,7 @@ describe('Flashcard Component', () => {
     german: 'Stuhl',
     gender: 'der',
     plural: 'Stühle',
-    partOfSpeech: 'noun',
+    partOfSpeech: 'nome',
     unit: 'Einheit 1'
   };
 
@@ -20,7 +20,7 @@ describe('Flashcard Component', () => {
     german: 'studieren',
     gender: null,
     plural: null,
-    partOfSpeech: 'verb',
+    partOfSpeech: 'verbo',
     unit: 'Einheit 1'
   };
 
@@ -32,8 +32,8 @@ describe('Flashcard Component', () => {
     
     // Back side elements should not be visible or active yet
     // The rate buttons shouldn't be rendered
-    expect(screen.queryByRole('button', { name: /Mark as correct/i })).not.toBeInTheDocument();
-    expect(screen.queryByRole('button', { name: /Mark as incorrect/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /Segna come corretto/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /Segna come errato/i })).not.toBeInTheDocument();
   });
 
   it('reveals German translation on first click', () => {
@@ -47,8 +47,8 @@ describe('Flashcard Component', () => {
     expect(screen.getAllByText('der')[0]).toBeInTheDocument();
     
     // Rating buttons should now be visible
-    expect(screen.getByRole('button', { name: /Mark as correct/i })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /Mark as incorrect/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Segna come corretto/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Segna come errato/i })).toBeInTheDocument();
   });
 
   it('reveals plural form on second click for nouns with plurals', () => {
@@ -73,7 +73,7 @@ describe('Flashcard Component', () => {
     fireEvent.click(cardElement); // Flip to back
 
     // Click Correct button
-    const correctBtn = screen.getByRole('button', { name: /Mark as correct/i });
+    const correctBtn = screen.getByRole('button', { name: /Segna come corretto/i });
     fireEvent.click(correctBtn);
     
     expect(handleRate).toHaveBeenCalledWith(true);

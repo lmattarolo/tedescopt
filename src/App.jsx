@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getWords, getProgress, recordReview, importUnit } from './utils/db';
-import { getNextCard } from './utils/scheduler';
+import { getNextCard, generateSessionSequence } from './utils/scheduler';
 import Flashcard from './components/Flashcard';
 import DeckManager from './components/DeckManager';
 import Stats from './components/Stats';
@@ -9,8 +9,14 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('study');
   const [words, setWords] = useState([]);
   const [progress, setProgress] = useState({});
-  const [currentCard, setCurrentCard] = useState(null);
   const [selectedUnits, setSelectedUnits] = useState([]);
+
+  // Session state
+  const [sessionState, setSessionState] = useState('config'); // 'config', 'active', 'summary'
+  const [sessionWordCount, setSessionWordCount] = useState(20);
+  const [sessionWords, setSessionWords] = useState([]);
+  const [sessionIndex, setSessionIndex] = useState(0);
+  const [sessionStats, setSessionStats] = useState({ correct: 0, wrong: 0 });
 
   // Fetch words and progress from LocalStorage on mount
   useEffect(() => {
@@ -65,35 +71,45 @@ export default function App() {
     return words.filter(w => selectedUnits.includes(w.unit || 'Default'));
   };
 
-  // Update current card when selected units or words list change
-  useEffect(() => {
+  // Start a new study session
+  const startSession = () => {
     const filtered = getFilteredWords();
-    if (filtered.length > 0) {
-      // If we don't have a current card, or the current card is no longer in the filtered list, pick a new one
-      if (!currentCard || !filtered.some(w => w.id === currentCard.id)) {
-        const next = getNextCard(filtered, progress, null);
-        setCurrentCard(next);
-      }
-    } else {
-      setCurrentCard(null);
+    if (filtered.length === 0) {
+      alert('Seleziona almeno un\'unità con parole, o lascia vuoto per studiare tutte le parole disponibili.');
+      return;
     }
-  }, [selectedUnits, words]);
+    const sequence = generateSessionSequence(filtered, progress, sessionWordCount);
+    setSessionWords(sequence);
+    setSessionIndex(0);
+    setSessionStats({ correct: 0, wrong: 0 });
+    setSessionState('active');
+  };
 
   // Handle rating feedback (Correct/Wrong)
   const handleRate = (isCorrect) => {
-    if (!currentCard) return;
+    const currentWord = sessionWords[sessionIndex];
+    if (!currentWord) return;
 
     // Record review stats
-    recordReview(currentCard.id, isCorrect);
+    recordReview(currentWord.id, isCorrect);
     
     // Refresh state from database
     const loadedProgress = getProgress();
     setProgress(loadedProgress);
 
-    // Pick the next card
-    const filtered = getFilteredWords();
-    const next = getNextCard(filtered, loadedProgress, currentCard.id);
-    setCurrentCard(next);
+    // Update session stats
+    setSessionStats(prev => ({
+      ...prev,
+      correct: prev.correct + (isCorrect ? 1 : 0),
+      wrong: prev.wrong + (!isCorrect ? 1 : 0)
+    }));
+
+    // Go to next card or summary
+    if (sessionIndex + 1 < sessionWords.length) {
+      setSessionIndex(sessionIndex + 1);
+    } else {
+      setSessionState('summary');
+    }
   };
 
   // Toggle unit filter selection
@@ -118,19 +134,19 @@ export default function App() {
           className={`tab-btn ${activeTab === 'study' ? 'active' : ''}`}
           onClick={() => setActiveTab('study')}
         >
-          📖 Study Cards
+          📖 Studia
         </button>
         <button 
           className={`tab-btn ${activeTab === 'manage' ? 'active' : ''}`}
           onClick={() => setActiveTab('manage')}
         >
-          ⚙️ Manage Decks
+          ⚙️ Gestisci mazzi
         </button>
         <button 
           className={`tab-btn ${activeTab === 'stats' ? 'active' : ''}`}
           onClick={() => setActiveTab('stats')}
         >
-          📊 Progress
+          📊 Progressi
         </button>
       </nav>
 
@@ -138,27 +154,89 @@ export default function App() {
       <main className="tab-content">
         {activeTab === 'study' && (
           <div className="panel" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            {/* Unit Selector Checkboxes */}
-            {availableUnits.length > 0 && (
-              <div className="unit-selector-wrapper">
-                <span className="form-label" style={{ fontSize: '0.85rem' }}>Select Units to Study (Leave empty to study all):</span>
-                <div className="unit-checkbox-grid">
-                  {availableUnits.map(unit => (
-                    <label key={unit} className="unit-checkbox-label">
-                      <input 
-                        type="checkbox" 
-                        checked={selectedUnits.includes(unit)}
-                        onChange={() => handleUnitToggle(unit)}
-                      />
-                      {unit}
-                    </label>
-                  ))}
+            {sessionState === 'config' && (
+              <>
+                {/* Unit Selector Checkboxes */}
+                {availableUnits.length > 0 && (
+                  <div className="unit-selector-wrapper">
+                    <span className="form-label" style={{ fontSize: '0.85rem' }}>Seleziona le unità da studiare (lascia vuoto per studiarle tutte):</span>
+                    <div className="unit-checkbox-grid">
+                      {availableUnits.map(unit => (
+                        <label key={unit} className="unit-checkbox-label">
+                          <input 
+                            type="checkbox" 
+                            checked={selectedUnits.includes(unit)}
+                            onChange={() => handleUnitToggle(unit)}
+                          />
+                          {unit}
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                
+                {availableUnits.length > 0 && (
+                  <div className="word-count-selector">
+                    <span className="form-label" style={{ fontSize: '0.85rem' }}>Quante parole?</span>
+                    <div className="word-count-options">
+                      {[20, 30, 40, 50].map(count => (
+                        <label key={count} className="word-count-label">
+                          <input
+                            type="radio"
+                            name="wordCount"
+                            value={count}
+                            checked={sessionWordCount === count}
+                            onChange={() => setSessionWordCount(count)}
+                          />
+                          {count}
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                
+                <button 
+                  className="start-session-btn" 
+                  onClick={startSession}
+                  disabled={words.length === 0}
+                >
+                  Inizia sessione
+                </button>
+              </>
+            )}
+
+            {sessionState === 'active' && sessionWords.length > 0 && (
+              <>
+                <div className="session-progress-header">
+                  Parola {sessionIndex + 1} di {sessionWords.length}
                 </div>
+                <Flashcard key={sessionWords[sessionIndex].id} card={sessionWords[sessionIndex]} onRate={handleRate} />
+              </>
+            )}
+
+            {sessionState === 'summary' && (
+              <div className="session-summary-container">
+                <h2>Sessione completata! 🎉</h2>
+                <div className="session-stats">
+                  <div className="stat-box correct">
+                    <span className="stat-icon">✨</span>
+                    <span className="stat-value">{sessionStats.correct}</span>
+                    <span className="stat-label">Corrette</span>
+                  </div>
+                  <div className="stat-box wrong">
+                    <span className="stat-icon">❌</span>
+                    <span className="stat-value">{sessionStats.wrong}</span>
+                    <span className="stat-label">Errate</span>
+                  </div>
+                </div>
+                <button 
+                  className="start-session-btn" 
+                  onClick={() => setSessionState('config')}
+                >
+                  Torna alla configurazione
+                </button>
               </div>
             )}
-            
-            {/* Active Card display */}
-            <Flashcard key={currentCard ? currentCard.id : 'empty'} card={currentCard} onRate={handleRate} />
           </div>
         )}
 

@@ -22,7 +22,7 @@ export default function DeckManager({ words, onDataChange }) {
   const [formItalian, setFormItalian] = useState('');
   const [formGerman, setFormGerman] = useState('');
   const [formUnit, setFormUnit] = useState('Einheit 1');
-  const [formPartOfSpeech, setFormPartOfSpeech] = useState('noun');
+  const [formPartOfSpeech, setFormPartOfSpeech] = useState('nome');
   const [formGender, setFormGender] = useState('');
   const [formPlural, setFormPlural] = useState('');
 
@@ -47,7 +47,7 @@ export default function DeckManager({ words, onDataChange }) {
     setFormItalian('');
     setFormGerman('');
     setFormUnit(selectedUnitFilter !== 'All' ? selectedUnitFilter : 'Einheit 1');
-    setFormPartOfSpeech('noun');
+    setFormPartOfSpeech('nome');
     setFormGender('');
     setFormPlural('');
     setIsModalOpen(true);
@@ -60,7 +60,7 @@ export default function DeckManager({ words, onDataChange }) {
     setFormItalian(word.italian);
     setFormGerman(word.german);
     setFormUnit(word.unit);
-    setFormPartOfSpeech(word.partOfSpeech || 'noun');
+    setFormPartOfSpeech(word.partOfSpeech || 'nome');
     setFormGender(word.gender || '');
     setFormPlural(word.plural || '');
     setIsModalOpen(true);
@@ -70,7 +70,7 @@ export default function DeckManager({ words, onDataChange }) {
   const handleSave = (e) => {
     e.preventDefault();
     if (!formItalian.trim() || !formGerman.trim()) {
-      alert('Italian and German fields are required!');
+      alert('I campi in italiano e tedesco sono obbligatori!');
       return;
     }
 
@@ -79,8 +79,8 @@ export default function DeckManager({ words, onDataChange }) {
       german: formGerman,
       unit: formUnit,
       partOfSpeech: formPartOfSpeech,
-      gender: formPartOfSpeech === 'noun' ? formGender || null : null,
-      plural: formPartOfSpeech === 'noun' ? formPlural || null : null,
+      gender: formPartOfSpeech === 'nome' ? formGender || null : null,
+      plural: formPartOfSpeech === 'nome' ? formPlural || null : null,
     };
 
     if (modalMode === 'add') {
@@ -95,7 +95,7 @@ export default function DeckManager({ words, onDataChange }) {
 
   // Handle word deletion
   const handleDelete = (wordId) => {
-    if (confirm('Are you sure you want to delete this word?')) {
+    if (confirm('Sei sicuro di voler eliminare questa parola?')) {
       deleteWord(wordId);
       onDataChange();
     }
@@ -111,14 +111,14 @@ export default function DeckManager({ words, onDataChange }) {
       try {
         const data = JSON.parse(event.target.result);
         if (!data.unit || !data.words || !Array.isArray(data.words)) {
-          alert('Invalid file format. Must contain a "unit" string and "words" array.');
+          alert('Formato file non valido. Deve contenere una stringa "unit" e un array "words".');
           return;
         }
         importUnit(data.unit, data.words);
-        alert(`Successfully imported Unit "${data.unit}" with ${data.words.length} words!`);
+        alert(`Unità "${data.unit}" importata con successo con ${data.words.length} parole!`);
         onDataChange();
       } catch (err) {
-        alert('Failed to parse JSON file.');
+        alert('Impossibile analizzare il file JSON.');
       }
     };
     reader.readAsText(file);
@@ -135,10 +135,10 @@ export default function DeckManager({ words, onDataChange }) {
     reader.onload = (event) => {
       try {
         importBackup(event.target.result);
-        alert('Backup database imported successfully!');
+        alert('Database di backup importato con successo!');
         onDataChange();
       } catch (err) {
-        alert('Failed to restore backup: ' + err.message);
+        alert('Ripristino del backup fallito: ' + err.message);
       }
     };
     reader.readAsText(file);
@@ -159,13 +159,13 @@ export default function DeckManager({ words, onDataChange }) {
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
     } catch (err) {
-      alert('Failed to export backup: ' + err.message);
+      alert('Esportazione del backup fallita: ' + err.message);
     }
   };
 
   // Reset database completely
   const handleResetDatabase = () => {
-    if (confirm('CRITICAL: This will wipe out all imported units and study progress history. Do you want to continue?')) {
+    if (confirm('CRITICO: Questo eliminerà tutte le unità importate e la cronologia dei progressi di studio. Vuoi continuare?')) {
       resetDatabase();
       onDataChange();
     }
@@ -173,33 +173,33 @@ export default function DeckManager({ words, onDataChange }) {
 
   return (
     <div className="panel">
-      <h2>Manage Vocabulary</h2>
+      <h2>Gestione Vocabolario</h2>
       <p style={{ color: 'var(--text-secondary)', marginBottom: '20px', fontSize: '0.9rem' }}>
-        Import new glossary units parsed by Antigravity, add words manually, edit typos, and backup/restore progress.
+        Importa nuove unità di glossario analizzate da Antigravity, aggiungi parole manualmente, correggi refusi e fai il backup/ripristino dei progressi.
       </p>
 
       {/* Control Buttons Panel */}
       <div className="deck-controls">
         <button className="btn-primary" onClick={openAddModal}>
-          ➕ Add Word Manually
+          ➕ Aggiungi parola manualmente
         </button>
         
         <div className="file-input-wrapper">
-          <button className="btn-secondary">📥 Import Unit JSON</button>
+          <button className="btn-secondary">📥 Importa JSON Unità</button>
           <input type="file" accept=".json" onChange={handleUnitFileImport} />
         </div>
 
         <button className="btn-secondary" onClick={handleBackupExport}>
-          💾 Export Backup
+          💾 Esporta Backup
         </button>
 
         <div className="file-input-wrapper">
-          <button className="btn-secondary">🔄 Import Backup</button>
+          <button className="btn-secondary">🔄 Importa Backup</button>
           <input type="file" accept=".json" onChange={handleBackupImport} />
         </div>
 
         <button className="btn-secondary" style={{ borderColor: 'rgba(239, 68, 68, 0.3)', color: 'var(--danger)' }} onClick={handleResetDatabase}>
-          ⚠️ Reset Database
+          ⚠️ Ripristina Database
         </button>
       </div>
 
@@ -215,7 +215,7 @@ export default function DeckManager({ words, onDataChange }) {
           >
             {units.map(unit => (
               <option key={unit} value={unit}>
-                {unit === 'All' ? 'All Units' : unit}
+                {unit === 'All' ? 'Tutte le unità' : unit}
               </option>
             ))}
           </select>
@@ -225,7 +225,7 @@ export default function DeckManager({ words, onDataChange }) {
           <input 
             type="text" 
             className="input-control" 
-            placeholder="Search by Italian or German word..."
+            placeholder="Cerca per parola in italiano o tedesco..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
@@ -235,20 +235,20 @@ export default function DeckManager({ words, onDataChange }) {
       {/* Word Table List */}
       {filteredWords.length === 0 ? (
         <div className="empty-state">
-          <p>No words match the selected filters.</p>
+          <p>Nessuna parola corrisponde ai filtri selezionati.</p>
         </div>
       ) : (
         <div className="word-table-wrapper">
           <table className="word-table">
             <thead>
               <tr>
-                <th>Unit</th>
-                <th>Italian</th>
-                <th>German</th>
-                <th>Type</th>
-                <th>Gender</th>
-                <th>Plural</th>
-                <th>Actions</th>
+                <th>Unità</th>
+                <th>Italiano</th>
+                <th>Tedesco</th>
+                <th>Tipo</th>
+                <th>Genere</th>
+                <th>Plurale</th>
+                <th>Azioni</th>
               </tr>
             </thead>
             <tbody>
@@ -257,7 +257,7 @@ export default function DeckManager({ words, onDataChange }) {
                   <td><span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{word.unit}</span></td>
                   <td><strong>{word.italian}</strong></td>
                   <td>
-                    {word.partOfSpeech === 'noun' && word.gender ? (
+                    {word.partOfSpeech === 'nome' && word.gender ? (
                       <>
                         <span style={{ color: 'var(--text-muted)', marginRight: '6px' }}>
                           {word.gender}
@@ -279,10 +279,10 @@ export default function DeckManager({ words, onDataChange }) {
                   <td><span style={{ color: 'var(--secondary)' }}>{word.plural || '-'}</span></td>
                   <td>
                     <div className="action-cell">
-                      <button className="btn-icon" onClick={() => openEditModal(word)} title="Edit word">
+                      <button className="btn-icon" onClick={() => openEditModal(word)} title="Modifica parola">
                         ✏️
                       </button>
-                      <button className="btn-icon delete" onClick={() => handleDelete(word.id)} title="Delete word">
+                      <button className="btn-icon delete" onClick={() => handleDelete(word.id)} title="Elimina parola">
                         🗑️
                       </button>
                     </div>
@@ -299,84 +299,84 @@ export default function DeckManager({ words, onDataChange }) {
         <div className="modal-overlay" onClick={() => setIsModalOpen(false)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <h3 className="modal-header">
-              {modalMode === 'add' ? 'Add New Word' : 'Edit Word Details'}
+              {modalMode === 'add' ? 'Aggiungi nuova parola' : 'Modifica dettagli parola'}
             </h3>
             
             <form onSubmit={handleSave}>
               <div className="form-group">
-                <label className="form-label">Italian Word</label>
+                <label className="form-label">Parola in italiano</label>
                 <input 
                   type="text" 
                   className="input-control" 
                   value={formItalian}
                   onChange={(e) => setFormItalian(e.target.value)}
-                  placeholder="e.g. la sedia"
+                  placeholder="es. la sedia"
                   required
                 />
               </div>
 
               <div className="form-group">
-                <label className="form-label">German Word (Root)</label>
+                <label className="form-label">Parola in tedesco (radice)</label>
                 <input 
                   type="text" 
                   className="input-control" 
                   value={formGerman}
                   onChange={(e) => setFormGerman(e.target.value)}
-                  placeholder="e.g. Stuhl (no gender prefix)"
+                  placeholder="es. Stuhl (senza articolo)"
                   required
                 />
               </div>
 
               <div className="form-group">
-                <label className="form-label">Unit</label>
+                <label className="form-label">Unità</label>
                 <input 
                   type="text" 
                   className="input-control" 
                   value={formUnit}
                   onChange={(e) => setFormUnit(e.target.value)}
-                  placeholder="e.g. Einheit 1"
+                  placeholder="es. Einheit 1"
                   required
                 />
               </div>
 
               <div className="form-group">
-                <label className="form-label">Part of Speech</label>
+                <label className="form-label">Parte del discorso</label>
                 <select 
                   className="input-control"
                   value={formPartOfSpeech}
                   onChange={(e) => setFormPartOfSpeech(e.target.value)}
                 >
-                  <option value="noun">Noun</option>
-                  <option value="verb">Verb</option>
-                  <option value="adjective">Adjective</option>
-                  <option value="other">Other</option>
+                  <option value="nome">Sostantivo</option>
+                  <option value="verbo">Verbo</option>
+                  <option value="aggettivo">Aggettivo</option>
+                  <option value="altro">Altro</option>
                 </select>
               </div>
 
-              {formPartOfSpeech === 'noun' && (
+              {formPartOfSpeech === 'nome' && (
                 <>
                   <div className="form-group">
-                    <label className="form-label">Gender</label>
+                    <label className="form-label">Genere</label>
                     <select 
                       className="input-control"
                       value={formGender}
                       onChange={(e) => setFormGender(e.target.value)}
                     >
-                      <option value="">No Gender</option>
-                      <option value="der">der (Masculine)</option>
-                      <option value="die">die (Feminine)</option>
-                      <option value="das">das (Neuter)</option>
+                      <option value="">Nessun genere</option>
+                      <option value="der">der (Maschile)</option>
+                      <option value="die">die (Femminile)</option>
+                      <option value="das">das (Neutro)</option>
                     </select>
                   </div>
 
                   <div className="form-group">
-                    <label className="form-label">Plural Form (if exists)</label>
+                    <label className="form-label">Forma plurale (se esiste)</label>
                     <input 
                       type="text" 
                       className="input-control" 
                       value={formPlural}
                       onChange={(e) => setFormPlural(e.target.value)}
-                      placeholder="e.g. Stühle"
+                      placeholder="es. Stühle"
                     />
                   </div>
                 </>
@@ -384,10 +384,10 @@ export default function DeckManager({ words, onDataChange }) {
 
               <div className="modal-actions">
                 <button type="button" className="btn-secondary" onClick={() => setIsModalOpen(false)}>
-                  Cancel
+                  Annulla
                 </button>
                 <button type="submit" className="btn-primary">
-                  {modalMode === 'add' ? 'Create Word' : 'Save Changes'}
+                  {modalMode === 'add' ? 'Crea parola' : 'Salva modifiche'}
                 </button>
               </div>
             </form>

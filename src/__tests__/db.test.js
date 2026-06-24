@@ -26,7 +26,7 @@ describe('db - LocalStorage Database Operations', () => {
   });
 
   it('should save and get words correctly', () => {
-    const mockWords = [{ id: '1', italian: 'cane', german: 'Hund' }];
+    const mockWords = [{ id: '1', italian: 'cane', german: 'Hund', partOfSpeech: 'altro' }];
     saveWords(mockWords);
     expect(getWords()).toEqual(mockWords);
   });
@@ -41,6 +41,7 @@ describe('db - LocalStorage Database Operations', () => {
     expect(imported[0].unit).toBe('Einheit 1');
     expect(imported[0].italian).toBe('gatto');
     expect(imported[0].german).toBe('Katze');
+    expect(imported[0].partOfSpeech).toBe('nome'); // 'noun' normalized to 'nome'
     expect(imported[0].id).toBeDefined();
   });
 
@@ -63,7 +64,7 @@ describe('db - LocalStorage Database Operations', () => {
   });
 
   it('should export and import backup backups correctly', () => {
-    const mockWords = [{ id: '1', italian: 'cane', german: 'Hund', unit: 'Einheit 1' }];
+    const mockWords = [{ id: '1', italian: 'cane', german: 'Hund', unit: 'Einheit 1', partOfSpeech: 'altro' }];
     const mockProgress = { '1': { weight: 50, correctCount: 2, totalCount: 4 } };
     
     saveWords(mockWords);
