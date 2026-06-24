@@ -122,7 +122,7 @@ export default function App() {
   };
 
   return (
-    <div id="root">
+    <div className="app-container">
       <header className="app-header">
         <h1 className="app-title">TedescoPT</h1>
         <p className="app-subtitle">Impara il vocabolario tedesco (Zanichelli Glossary Companion)</p>
