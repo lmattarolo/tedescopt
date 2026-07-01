@@ -817,5 +817,122 @@
       "plural": null,
       "partOfSpeech": "adjective"
     }
+  ],
+  "stories": [
+    {
+      "id": "e1-story-1",
+      "paragraphs": [
+        {
+          "character": "Superman",
+          "gender": "der",
+          "text": "Ogni sera, Superman prende un autobus rosso per incontrare il suo migliore amico e bere insieme un caffè bollente.",
+          "wordsUsed": ["sera", "autobus", "amico", "caffè"]
+        },
+        {
+          "character": "Regina",
+          "gender": "die",
+          "text": "Durante la notte oscura, la Regina lancia ferocemente un enorme topo contro la banca della sua odiata città, sventolando trionfalmente una bandiera distrutta!",
+          "wordsUsed": ["notte", "topo", "banca", "città", "bandiera"]
+        },
+        {
+          "character": "Bambino",
+          "gender": "das",
+          "text": "Svegliatosi improvvisamente in un oscuro hotel, il Bambino gigante strappa selvaggiamente un libro per divorare letteralmente l'alfabeto!",
+          "wordsUsed": ["hotel", "bambino", "libro", "alfabeto"]
+        }
+      ]
+    },
+    {
+      "id": "e1-story-2",
+      "paragraphs": [
+        {
+          "character": "Superman",
+          "gender": "der",
+          "text": "Come un padre disperato, Superman vola velocissimamente da nord a sud e da est a ovest, urlando ossessivamente.",
+          "wordsUsed": ["padre", "nord", "sud", "est", "ovest"]
+        },
+        {
+          "character": "Regina",
+          "gender": "die",
+          "text": "Una bizzarra signora e la sua amica costringono sadicamente l'intera famiglia della Regina ad ascoltare una terribile musica suonata su una chitarra rotta!",
+          "wordsUsed": ["signora", "amica", "famiglia", "musica", "chitarra"]
+        },
+        {
+          "character": "Bambino",
+          "gender": "das",
+          "text": "Quest'anno, il Bambino ruba furtivamente un taxi giallo e si schianta violentemente contro una gigantesca automobile parcheggiata dentro casa!",
+          "wordsUsed": ["anno", "bambino", "taxi", "automobile", "casa"]
+        }
+      ]
+    },
+    {
+      "id": "e1-story-3",
+      "paragraphs": [
+        {
+          "character": "Superman",
+          "gender": "der",
+          "text": "Un pazzo signore e un geniale studente aiutano un insegnante disperato a riprogrammare un computer alieno per far esplodere un motore gigante.",
+          "wordsUsed": ["signore", "studente", "insegnante", "computer", "motore"]
+        },
+        {
+          "character": "Regina",
+          "gender": "die",
+          "text": "Sua madre trascina brutalmente una povera studentessa fuori dalla classe, distruggendo la scuola intera solo per mangiare una pizza fredda.",
+          "wordsUsed": ["madre", "studentessa", "classe", "scuola", "pizza"]
+        },
+        {
+          "character": "Bambino",
+          "gender": "das",
+          "text": "Il Bambino urla terrorizzato al telefono prima di fuggire disperatamente da un teatro infuocato, abbandonando per sempre il suo isolato paese.",
+          "wordsUsed": ["bambino", "telefono", "teatro", "paese"]
+        }
+      ]
+    },
+    {
+      "id": "e1-story-4",
+      "paragraphs": [
+        {
+          "character": "Superman",
+          "gender": "der",
+          "text": "Ogni singola mattina, il cattivo insegnante costringe un povero compagno a urlare disperatamente il suo imbarazzante nome.",
+          "wordsUsed": ["mattina", "insegnante", "compagno", "nome"]
+        },
+        {
+          "character": "Regina",
+          "gender": "die",
+          "text": "La Regina viaggia furiosamente attraverso l'intera nazione per obbligare brutalmente la gente della capitale a studiare un'antica lingua.",
+          "wordsUsed": ["nazione", "gente", "capitale", "lingua"]
+        },
+        {
+          "character": "Bambino",
+          "gender": "das",
+          "text": "Nonostante la sua giovane età, il Bambino magico legge velocemente un antico libro per prevedere esattamente il nuovo anno.",
+          "wordsUsed": ["età", "bambino", "libro", "anno"]
+        }
+      ]
+    },
+    {
+      "id": "e1-story-5",
+      "paragraphs": [
+        {
+          "character": "Superman",
+          "gender": "der",
+          "text": "Tutto il giorno, Superman distrugge incredibilmente un autobus gigantesco scagliando violentemente un pesante computer contro il suo fragile motore.",
+          "wordsUsed": ["autobus", "computer", "motore", "giorno"]
+        },
+        {
+          "character": "Regina",
+          "gender": "die",
+          "text": "Una crudele insegnante fugge rapidamente dalla Turchia verso la lontana Svizzera, nascondendo gelosamente un misterioso numero insieme a una spaventata compagna.",
+          "wordsUsed": ["insegnante", "Turchia", "Svizzera", "numero", "compagna"]
+        },
+        {
+          "character": "Bambino",
+          "gender": "das",
+          "text": "Il Bambino invisibile ruba magicamente una velocissima automobile, superando pericolosamente un lento taxi davanti al grande hotel.",
+          "wordsUsed": ["bambino", "automobile", "taxi", "hotel"]
+        }
+      ]
+    }
   ]
 }

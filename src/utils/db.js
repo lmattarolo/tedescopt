@@ -3,6 +3,7 @@
 const STORAGE_KEYS = {
   WORDS: 'tedescopt_words',
   PROGRESS: 'tedescopt_progress',
+  STORIES: 'tedescopt_stories',
 };
 
 // Generates a unique ID (simple browser-compatible UUID replacement)
@@ -98,8 +99,28 @@ export function saveProgress(progress) {
   }
 }
 
+// Get all stories
+export function getStories() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEYS.STORIES);
+    return raw ? JSON.parse(raw) : [];
+  } catch (e) {
+    console.error('Error reading stories from LocalStorage:', e);
+    return [];
+  }
+}
+
+// Save all stories
+export function saveStories(stories) {
+  try {
+    localStorage.setItem(STORAGE_KEYS.STORIES, JSON.stringify(stories));
+  } catch (e) {
+    console.error('Error saving stories to LocalStorage:', e);
+  }
+}
+
 // Import a new unit vocabulary JSON
-export function importUnit(unitName, newWords) {
+export function importUnit(unitName, newWords, newStories = []) {
   const currentWords = getWords();
   
   // Format and assign IDs to new words if missing
@@ -134,6 +155,23 @@ export function importUnit(unitName, newWords) {
   });
 
   saveWords(mergedWords);
+
+  // Handle stories
+  if (newStories && newStories.length > 0) {
+    const currentStories = getStories();
+    const mergedStories = [...currentStories];
+    
+    newStories.forEach(newStory => {
+      const duplicateIndex = mergedStories.findIndex(s => s.id === newStory.id);
+      if (duplicateIndex !== -1) {
+        mergedStories[duplicateIndex] = { ...mergedStories[duplicateIndex], ...newStory, unit: unitName };
+      } else {
+        mergedStories.push({ ...newStory, unit: unitName, id: newStory.id || generateId() });
+      }
+    });
+    saveStories(mergedStories);
+  }
+
   return mergedWords;
 }
 
@@ -217,10 +255,12 @@ export function deleteWord(wordId) {
 export function exportBackup() {
   const words = getWords();
   const progress = getProgress();
+  const stories = getStories();
   return JSON.stringify({
     version: '1.0.0',
     words,
     progress,
+    stories,
     exportedAt: new Date().toISOString(),
   }, null, 2);
 }
@@ -238,6 +278,9 @@ export function importBackup(jsonString) {
     }));
     saveWords(normalizedWords);
     saveProgress(data.progress || {});
+    if (data.stories && Array.isArray(data.stories)) {
+      saveStories(data.stories);
+    }
     return true;
   } catch (e) {
     console.error('Error importing backup:', e);
@@ -249,4 +292,5 @@ export function importBackup(jsonString) {
 export function resetDatabase() {
   localStorage.removeItem(STORAGE_KEYS.WORDS);
   localStorage.removeItem(STORAGE_KEYS.PROGRESS);
+  localStorage.removeItem(STORAGE_KEYS.STORIES);
 }

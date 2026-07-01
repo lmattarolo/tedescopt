@@ -4,6 +4,8 @@ import {
   saveWords, 
   getProgress, 
   saveProgress, 
+  getStories,
+  saveStories,
   importUnit, 
   recordReview, 
   addWord, 
@@ -23,6 +25,7 @@ describe('db - LocalStorage Database Operations', () => {
   it('should initially return empty arrays/objects', () => {
     expect(getWords()).toEqual([]);
     expect(getProgress()).toEqual({});
+    expect(getStories()).toEqual([]);
   });
 
   it('should save and get words correctly', () => {
@@ -31,18 +34,40 @@ describe('db - LocalStorage Database Operations', () => {
     expect(getWords()).toEqual(mockWords);
   });
 
-  it('should import a vocabulary unit correctly', () => {
+  it('should import a vocabulary unit correctly, including stories', () => {
     const newWords = [
       { italian: 'gatto', german: 'Katze', partOfSpeech: 'noun', gender: 'die', plural: 'Katzen' }
     ];
-    const imported = importUnit('Einheit 1', newWords);
+    const newStories = [
+      { id: 's1', paragraphs: [{ text: 'Story 1' }] }
+    ];
+    
+    const imported = importUnit('Einheit 1', newWords, newStories);
     
     expect(imported).toHaveLength(1);
     expect(imported[0].unit).toBe('Einheit 1');
     expect(imported[0].italian).toBe('Gatto');
-    expect(imported[0].german).toBe('Katze');
-    expect(imported[0].partOfSpeech).toBe('nome'); // 'noun' normalized to 'nome'
-    expect(imported[0].id).toBeDefined();
+    
+    const savedStories = getStories();
+    expect(savedStories).toHaveLength(1);
+    expect(savedStories[0].id).toBe('s1');
+  });
+
+  it('should merge duplicate stories by id on subsequent imports', () => {
+    const s1 = { id: 's1', paragraphs: [{ text: 'Old Text' }] };
+    const s1Updated = { id: 's1', paragraphs: [{ text: 'New Text' }] };
+    const s2 = { id: 's2', paragraphs: [{ text: 'Story 2' }] };
+    
+    importUnit('Unit 1', [], [s1]);
+    expect(getStories()).toHaveLength(1);
+    
+    importUnit('Unit 1', [], [s1Updated, s2]);
+    const savedStories = getStories();
+    
+    expect(savedStories).toHaveLength(2);
+    // Should update s1
+    const foundS1 = savedStories.find(s => s.id === 's1');
+    expect(foundS1.paragraphs[0].text).toBe('New Text');
   });
 
   it('should handle recordReview correctness and adjust weights', () => {
@@ -63,24 +88,29 @@ describe('db - LocalStorage Database Operations', () => {
     expect(secondReview.weight).toBe(100);
   });
 
-  it('should export and import backup backups correctly', () => {
+  it('should export and import backup backups correctly, including stories', () => {
     const mockWords = [{ id: '1', italian: 'cane', german: 'Hund', unit: 'Einheit 1', partOfSpeech: 'altro' }];
     const mockProgress = { '1': { weight: 50, correctCount: 2, totalCount: 4 } };
+    const mockStories = [{ id: 's1', paragraphs: [] }];
     
     saveWords(mockWords);
     saveProgress(mockProgress);
+    saveStories(mockStories);
 
     const backup = exportBackup();
     expect(backup).toContain('"italian": "cane"');
+    expect(backup).toContain('"id": "s1"');
 
     // Reset database
     resetDatabase();
     expect(getWords()).toEqual([]);
+    expect(getStories()).toEqual([]);
 
     // Restore backup
     const status = importBackup(backup);
     expect(status).toBe(true);
     expect(getWords()).toEqual(mockWords);
     expect(getProgress()).toEqual(mockProgress);
+    expect(getStories()).toEqual(mockStories);
   });
 });

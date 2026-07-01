@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { getWords, getProgress, recordReview, importUnit } from './utils/db';
+import { getWords, getProgress, recordReview, importUnit, getStories } from './utils/db';
 import { getNextCard, generateSessionSequence } from './utils/scheduler';
 import Flashcard from './components/Flashcard';
 import DeckManager from './components/DeckManager';
 import Stats from './components/Stats';
+import StoriesView from './components/StoriesView';
+import StoryCard from './components/StoryCard';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('study');
   const [words, setWords] = useState([]);
   const [progress, setProgress] = useState({});
+  const [stories, setStories] = useState([]);
   const [selectedUnits, setSelectedUnits] = useState([]);
 
   // Session state
@@ -17,6 +20,8 @@ export default function App() {
   const [sessionWords, setSessionWords] = useState([]);
   const [sessionIndex, setSessionIndex] = useState(0);
   const [sessionStats, setSessionStats] = useState({ correct: 0, wrong: 0 });
+  const [sessionWrongWords, setSessionWrongWords] = useState([]);
+  const [selectedStory, setSelectedStory] = useState(null); // For the modal
 
   // Fetch words and progress from LocalStorage on mount
   useEffect(() => {
@@ -38,7 +43,7 @@ export default function App() {
           if (response.ok) {
             const data = await response.json();
             if (data.unit && data.words) {
-              importUnit(data.unit, data.words);
+              importUnit(data.unit, data.words, data.stories);
             }
           }
         } catch (e) {
@@ -56,8 +61,10 @@ export default function App() {
   const refreshData = () => {
     const loadedWords = getWords();
     const loadedProgress = getProgress();
+    const loadedStories = getStories();
     setWords(loadedWords);
     setProgress(loadedProgress);
+    setStories(loadedStories);
   };
 
   // Get list of all available units in the database
@@ -82,6 +89,7 @@ export default function App() {
     setSessionWords(sequence);
     setSessionIndex(0);
     setSessionStats({ correct: 0, wrong: 0 });
+    setSessionWrongWords([]);
     setSessionState('active');
   };
 
@@ -103,6 +111,16 @@ export default function App() {
       correct: prev.correct + (isCorrect ? 1 : 0),
       wrong: prev.wrong + (!isCorrect ? 1 : 0)
     }));
+
+    if (!isCorrect) {
+      setSessionWrongWords(prev => {
+        // Prevent duplicates if they review the same word twice (though scheduler doesn't do this yet)
+        if (!prev.find(w => w.id === currentWord.id)) {
+          return [...prev, currentWord];
+        }
+        return prev;
+      });
+    }
 
     // Go to next card or summary
     if (sessionIndex + 1 < sessionWords.length) {
@@ -141,6 +159,12 @@ export default function App() {
           onClick={() => setActiveTab('manage')}
         >
           ⚙️ Gestisci mazzi
+        </button>
+        <button 
+          className={`tab-btn ${activeTab === 'stories' ? 'active' : ''}`}
+          onClick={() => setActiveTab('stories')}
+        >
+          📖 Storie
         </button>
         <button 
           className={`tab-btn ${activeTab === 'stats' ? 'active' : ''}`}
@@ -229,8 +253,46 @@ export default function App() {
                     <span className="stat-label">Errate</span>
                   </div>
                 </div>
+
+                {sessionWrongWords.length > 0 && (
+                  <div className="wrong-words-review" style={{ marginTop: '24px', width: '100%', textAlign: 'left', backgroundColor: 'var(--bg-card)', padding: '16px', borderRadius: 'var(--radius-md)' }}>
+                    <h3 style={{ marginBottom: '12px', fontSize: '1.1rem', color: 'var(--text-primary)' }}>Parole da ripassare:</h3>
+                    <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                      {sessionWrongWords.map(word => {
+                        // Find if a story exists containing this word's italian translation
+                        const story = stories.find(s => 
+                          s.paragraphs.some(p => p.wordsUsed && p.wordsUsed.some(w => {
+                            // Split the italian dictionary definition into tokens to handle things like "Paese / nazione" or "insegnante (m.)"
+                            const italianTokens = word.italian.toLowerCase().split(/[^a-zà-öø-ÿ]+/);
+                            return italianTokens.includes(w.toLowerCase());
+                          }))
+                        );
+
+                        return (
+                          <li key={word.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 0', borderBottom: '1px solid var(--border-color)' }}>
+                            <div style={{ display: 'flex', flexDirection: 'column' }}>
+                              <span style={{ fontWeight: '500' }}>{word.german} <span style={{opacity: 0.7, fontSize: '0.8rem'}}>({word.gender})</span></span>
+                              <span style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>{word.italian}</span>
+                            </div>
+                            {story && (
+                              <button 
+                                className="action-btn" 
+                                style={{ padding: '6px 12px', fontSize: '0.85rem' }}
+                                onClick={() => setSelectedStory(story)}
+                              >
+                                📖 Mostra Storia
+                              </button>
+                            )}
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
+                )}
+
                 <button 
                   className="start-session-btn" 
+                  style={{ marginTop: '24px' }}
                   onClick={() => setSessionState('config')}
                 >
                   Torna alla configurazione
@@ -249,8 +311,30 @@ export default function App() {
           />
         )}
 
+        {activeTab === 'stories' && (
+          <StoriesView stories={stories} />
+        )}
+
         {activeTab === 'stats' && (
           <Stats words={words} progress={progress} />
+        )}
+
+        {/* Story Modal */}
+        {selectedStory && (
+          <div className="modal-overlay" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.8)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1000, padding: '20px' }} onClick={() => setSelectedStory(null)}>
+            <div className="modal-content" style={{ backgroundColor: 'var(--bg-dark)', borderRadius: 'var(--radius-lg)', padding: '24px', maxWidth: '600px', width: '100%', maxHeight: '90vh', overflowY: 'auto' }} onClick={e => e.stopPropagation()}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                <h2 style={{ fontSize: '1.4rem' }}>Storia Mnemonica</h2>
+                <button 
+                  style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', fontSize: '1.5rem', cursor: 'pointer' }}
+                  onClick={() => setSelectedStory(null)}
+                >
+                  &times;
+                </button>
+              </div>
+              <StoryCard story={selectedStory} />
+            </div>
+          </div>
         )}
       </main>
     </div>

@@ -322,6 +322,16 @@ body {
 .gender-badge.die { background-color: #701a75; color: #f472b6; }
 .gender-badge.das { background-color: #064e3b; color: #6ee7b7; }
 
+.gender-badge.inline-badge {
+  display: inline-block;
+  text-transform: none;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 0 6px;
+  margin: 0 2px;
+  vertical-align: baseline;
+}
+
 .german-word {
   font-size: 2rem;
   font-weight: 600;

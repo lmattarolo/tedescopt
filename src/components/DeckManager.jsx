@@ -115,7 +115,7 @@ export default function DeckManager({ words, onDataChange }) {
           alert('Formato file non valido. Deve contenere una stringa "unit" e un array "words".');
           return;
         }
-        importUnit(data.unit, data.words);
+        importUnit(data.unit, data.words, data.stories);
         alert(`Unità "${data.unit}" importata con successo con ${data.words.length} parole!`);
         onDataChange();
       } catch (err) {
