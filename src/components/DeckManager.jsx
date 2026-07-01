@@ -6,7 +6,8 @@ import {
   deleteWord, 
   exportBackup, 
   importBackup, 
-  resetDatabase 
+  resetDatabase,
+  formatGermanPlural
 } from '../utils/db';
 
 export default function DeckManager({ words, onDataChange }) {
@@ -276,7 +277,7 @@ export default function DeckManager({ words, onDataChange }) {
                       </span>
                     ) : '-'}
                   </td>
-                  <td><span style={{ color: 'var(--secondary)' }}>{word.plural || '-'}</span></td>
+                  <td><span style={{ color: 'var(--secondary)' }}>{word.plural ? formatGermanPlural(word.plural) : '-'}</span></td>
                   <td>
                     <div className="action-cell">
                       <button className="btn-icon" onClick={() => openEditModal(word)} title="Modifica parola">

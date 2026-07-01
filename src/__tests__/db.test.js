@@ -39,7 +39,7 @@ describe('db - LocalStorage Database Operations', () => {
     
     expect(imported).toHaveLength(1);
     expect(imported[0].unit).toBe('Einheit 1');
-    expect(imported[0].italian).toBe('gatto');
+    expect(imported[0].italian).toBe('Gatto');
     expect(imported[0].german).toBe('Katze');
     expect(imported[0].partOfSpeech).toBe('nome'); // 'noun' normalized to 'nome'
     expect(imported[0].id).toBeDefined();

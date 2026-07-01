@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { formatGermanPlural, capitalizeItalianIfNoun } from '../utils/db';
 
 /**
  * Flashcard Component
@@ -14,7 +15,7 @@ export default function Flashcard({ card, onRate }) {
   }, [card]);
 
   // Determine if plural exists safely
-  const hasPlural = card && card.partOfSpeech === 'nome' && card.plural && card.plural.trim() !== '';
+  const hasPlural = card && (card.partOfSpeech === 'nome' || card.partOfSpeech === 'noun') && card.plural && card.plural.trim() !== '';
 
   // Handle clicking the card to advance state
   const handleCardClick = () => {
@@ -29,20 +30,22 @@ export default function Flashcard({ card, onRate }) {
   useEffect(() => {
     if (!card) return; // Don't attach listeners if no card
 
+    const isFinalState = hasPlural ? flipState === 'plural' : flipState === 'back';
+
     const handleKeyDown = (e) => {
       if (e.code === 'Space' || e.code === 'Enter') {
         e.preventDefault();
         handleCardClick();
       } else if (e.code === 'Digit1' || e.code === 'ArrowLeft') {
-        if (flipState !== 'front') onRate(false);
+        if (isFinalState) onRate(false);
       } else if (e.code === 'Digit2' || e.code === 'ArrowRight') {
-        if (flipState !== 'front') onRate(true);
+        if (isFinalState) onRate(true);
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [flipState, card, onRate, hasPlural]); // Added hasPlural to dependencies implicitly via handleCardClick
+  }, [flipState, card, onRate, hasPlural]);
 
   if (!card) {
     return (
@@ -82,14 +85,14 @@ export default function Flashcard({ card, onRate }) {
         onClick={handleCardClick}
         role="button"
         tabIndex={0}
-        aria-label={`Flashcard: ${card.italian}. Premi Spazio per girare.`}
+        aria-label={`Flashcard: ${capitalizeItalianIfNoun(card.italian, card.partOfSpeech)}. Premi Spazio per girare.`}
       >
         <div className="flashcard">
           {/* FRONT FACE (Italian Word) */}
           <div className="card-face card-front">
             <span className="card-unit-badge">{card.unit}</span>
             <span className="card-pos-badge">{getPosLabel(card.partOfSpeech)}</span>
-            <h2 className="card-text">{card.italian}</h2>
+            <h2 className="card-text">{capitalizeItalianIfNoun(card.italian, card.partOfSpeech)}</h2>
             <div className="flip-prompt">Tocca o premi Spazio per girare</div>
           </div>
 
@@ -124,7 +127,7 @@ export default function Flashcard({ card, onRate }) {
                 {flipState === 'plural' ? (
                   <div className="plural-container">
                     <div className="plural-title">Plurale</div>
-                    <div className="plural-word">{card.plural}</div>
+                    <div className="plural-word">{formatGermanPlural(card.plural)}</div>
                   </div>
                 ) : (
                   <div className="plural-guess-hint">
@@ -141,8 +144,8 @@ export default function Flashcard({ card, onRate }) {
         </div>
       </div>
 
-      {/* REVIEW RATING ACTIONS (Only shown when card is flipped) */}
-      {flipState !== 'front' && (
+      {/* REVIEW RATING ACTIONS (Only shown when card is flipped to its final state) */}
+      {(hasPlural ? flipState === 'plural' : flipState === 'back') && (
         <div className="rating-container">
           <button 
             className="rate-btn wrong" 

@@ -30,15 +30,39 @@ export function normalizePartOfSpeech(pos) {
   }
 }
 
+// Capitalizes the first letter of the Italian word if it is a noun
+export function capitalizeItalianIfNoun(italian, partOfSpeech) {
+  const normalizedPos = normalizePartOfSpeech(partOfSpeech);
+  const trimmed = (italian || '').trim();
+  if (normalizedPos === 'nome' && trimmed) {
+    return trimmed.charAt(0).toUpperCase() + trimmed.slice(1);
+  }
+  return trimmed;
+}
+
+// Prepends the plural article "die" to German plurals if it's not already present
+export function formatGermanPlural(plural) {
+  if (!plural) return '';
+  const trimmed = plural.trim();
+  if (/^die\s+/i.test(trimmed)) {
+    return trimmed;
+  }
+  return `die ${trimmed}`;
+}
+
 // Get all vocabulary words
 export function getWords() {
   try {
     const raw = localStorage.getItem(STORAGE_KEYS.WORDS);
     const parsed = raw ? JSON.parse(raw) : [];
-    return parsed.map(w => ({
-      ...w,
-      partOfSpeech: normalizePartOfSpeech(w.partOfSpeech)
-    }));
+    return parsed.map(w => {
+      const normalizedPos = normalizePartOfSpeech(w.partOfSpeech);
+      return {
+        ...w,
+        partOfSpeech: normalizedPos,
+        italian: capitalizeItalianIfNoun(w.italian, normalizedPos)
+      };
+    });
   } catch (e) {
     console.error('Error reading words from LocalStorage:', e);
     return [];
@@ -79,15 +103,18 @@ export function importUnit(unitName, newWords) {
   const currentWords = getWords();
   
   // Format and assign IDs to new words if missing
-  const formattedNewWords = newWords.map(word => ({
-    id: word.id || generateId(),
-    italian: (word.italian || '').trim(),
-    german: (word.german || '').trim(),
-    gender: word.gender ? word.gender.trim().toLowerCase() : null,
-    plural: word.plural ? word.plural.trim() : null,
-    partOfSpeech: normalizePartOfSpeech(word.partOfSpeech),
-    unit: unitName,
-  }));
+  const formattedNewWords = newWords.map(word => {
+    const normalizedPos = normalizePartOfSpeech(word.partOfSpeech);
+    return {
+      id: word.id || generateId(),
+      italian: capitalizeItalianIfNoun(word.italian, normalizedPos),
+      german: (word.german || '').trim(),
+      gender: word.gender ? word.gender.trim().toLowerCase() : null,
+      plural: word.plural ? word.plural.trim() : null,
+      partOfSpeech: normalizedPos,
+      unit: unitName,
+    };
+  });
 
   // Filter out any duplicate entries (e.g. matching Italian and German in the same unit)
   const mergedWords = [...currentWords];
@@ -137,13 +164,14 @@ export function recordReview(wordId, isCorrect) {
 // Add a single word manually
 export function addWord(word) {
   const words = getWords();
+  const normalizedPos = normalizePartOfSpeech(word.partOfSpeech);
   const newWord = {
     id: generateId(),
-    italian: (word.italian || '').trim(),
+    italian: capitalizeItalianIfNoun(word.italian, normalizedPos),
     german: (word.german || '').trim(),
     gender: word.gender ? word.gender.trim().toLowerCase() : null,
     plural: word.plural ? word.plural.trim() : null,
-    partOfSpeech: normalizePartOfSpeech(word.partOfSpeech),
+    partOfSpeech: normalizedPos,
     unit: (word.unit || 'Manual').trim(),
   };
   words.push(newWord);
@@ -156,14 +184,15 @@ export function updateWord(updatedWord) {
   const words = getWords();
   const index = words.findIndex(w => w.id === updatedWord.id);
   if (index !== -1) {
+    const normalizedPos = normalizePartOfSpeech(updatedWord.partOfSpeech);
     words[index] = {
       ...words[index],
       ...updatedWord,
-      italian: (updatedWord.italian || '').trim(),
+      italian: capitalizeItalianIfNoun(updatedWord.italian, normalizedPos),
       german: (updatedWord.german || '').trim(),
       gender: updatedWord.gender ? updatedWord.gender.trim().toLowerCase() : null,
       plural: updatedWord.plural ? updatedWord.plural.trim() : null,
-      partOfSpeech: normalizePartOfSpeech(updatedWord.partOfSpeech),
+      partOfSpeech: normalizedPos,
     };
     saveWords(words);
     return true;

@@ -6,7 +6,7 @@ import Flashcard from '../components/Flashcard';
 describe('Flashcard Component', () => {
   const nounCard = {
     id: '1',
-    italian: 'la sedia',
+    italian: 'sedia',
     german: 'Stuhl',
     gender: 'der',
     plural: 'Stühle',
@@ -24,11 +24,11 @@ describe('Flashcard Component', () => {
     unit: 'Einheit 1'
   };
 
-  it('renders front side showing the Italian word first', () => {
+  it('renders front side showing the Italian word capitalized if noun', () => {
     render(<Flashcard card={nounCard} onRate={() => {}} />);
     
-    // Front side should show Italian word
-    expect(screen.getByText('la sedia')).toBeInTheDocument();
+    // Front side should show Italian word capitalized
+    expect(screen.getByText('Sedia')).toBeInTheDocument();
     
     // Back side elements should not be visible or active yet
     // The rate buttons shouldn't be rendered
@@ -36,7 +36,7 @@ describe('Flashcard Component', () => {
     expect(screen.queryByRole('button', { name: /Segna come errato/i })).not.toBeInTheDocument();
   });
 
-  it('reveals German translation on first click', () => {
+  it('reveals German translation on first click but hides rate buttons for words with plurals', () => {
     render(<Flashcard card={nounCard} onRate={() => {}} />);
     
     const cardElement = screen.getByRole('button', { name: /flashcard/i });
@@ -46,23 +46,39 @@ describe('Flashcard Component', () => {
     expect(screen.getByText('Stuhl')).toBeInTheDocument();
     expect(screen.getAllByText('der')[0]).toBeInTheDocument();
     
+    // Rating buttons should NOT be visible yet since they need to guess the plural first
+    expect(screen.queryByRole('button', { name: /Segna come corretto/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /Segna come errato/i })).not.toBeInTheDocument();
+  });
+
+  it('reveals German translation and shows rating buttons on first click for words without plurals', () => {
+    render(<Flashcard card={verbCard} onRate={() => {}} />);
+    
+    const cardElement = screen.getByRole('button', { name: /flashcard/i });
+    fireEvent.click(cardElement);
+
+    // German word should be displayed
+    expect(screen.getByText('studieren')).toBeInTheDocument();
+    
     // Rating buttons should now be visible
     expect(screen.getByRole('button', { name: /Segna come corretto/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /Segna come errato/i })).toBeInTheDocument();
   });
 
-  it('reveals plural form on second click for nouns with plurals', () => {
+  it('reveals plural form with die prefix and rating buttons on second click for nouns with plurals', () => {
     render(<Flashcard card={nounCard} onRate={() => {}} />);
     
     const cardElement = screen.getByRole('button', { name: /flashcard/i });
     
     // 1st click -> Back side
     fireEvent.click(cardElement);
-    expect(screen.queryByText('Stühle')).not.toBeInTheDocument();
+    expect(screen.queryByText('die Stühle')).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /Segna come corretto/i })).not.toBeInTheDocument();
 
     // 2nd click -> Plural side
     fireEvent.click(cardElement);
-    expect(screen.getByText('Stühle')).toBeInTheDocument();
+    expect(screen.getByText('die Stühle')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Segna come corretto/i })).toBeInTheDocument();
   });
 
   it('triggers onRate callback when rating buttons are clicked', () => {
